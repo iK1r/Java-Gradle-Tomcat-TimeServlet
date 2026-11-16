@@ -15,7 +15,7 @@ dependencies {
     testImplementation 'javax.servlet:javax.servlet-api:4.0.1'
 }
 
-// ROOT.war is deployed at http://localhost:8080/, not at a sub-path.
+// ROOT.war is deployed at the root context, without an application name in the URL.
 tasks.named('war') {
     archiveFileName = 'ROOT.war'
 }
