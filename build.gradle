@@ -1,0 +1,39 @@
+plugins {
+    id 'war'
+}
+
+group = 'com.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Tomcat 9 already contains the Servlet API at runtime.
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+    testImplementation 'javax.servlet:javax.servlet-api:4.0.1'
+}
+
+// ROOT.war is deployed at http://localhost:8080/, not at a sub-path.
+tasks.named('war') {
+    archiveFileName = 'ROOT.war'
+}
+
+// Small local tests that do not need an installed Tomcat server.
+tasks.register('selfTest', JavaExec) {
+    group = 'verification'
+    description = 'Check time servlet, timezone validation, and HTTP status codes'
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.example.timeservlet.TimeServletSelfTest'
+}
+
+tasks.named('check') {
+    dependsOn selfTest
+}
+
+// SelfTest is a standalone Java main class, not a JUnit test.
+tasks.named('test') {
+    failOnNoDiscoveredTests = false
+}
